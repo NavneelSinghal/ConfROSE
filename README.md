@@ -2,6 +2,12 @@
 
 Implementation of confidentiality (information flow control) in the ROSE compiler for C.
 
+## Description
+
+This project aims to build a secure compiler for C which focuses on data confidentiality in low-level code in the absence of memory safety by preventing explicit information flow under the assumption of an active adversary. It works with a lattice model for static and dependent security types to provide a rich and realistic system to work with.
+
+It uses static dataflow analysis, runtime instrumentation and taint-aware control-flow integrity to implement source-to-source transformations in C++ which transform code written in a subset of C with minimal security-related annotations into verifiably safe code.
+
 ## Installation Instructions for ROSE
 
 Warning: The whole installation process requires enough storage space for both Boost and ROSE, the latter of which is upwards of 30GB (please visit the respective websites to get a clearer idea of system requirements).
