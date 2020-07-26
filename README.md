@@ -1,4 +1,8 @@
-# Installation Instructions for ROSE
+# ConfROSE
+
+Implementation of confidentiality (information flow control) in the ROSE compiler for C.
+
+## Installation Instructions for ROSE
 
 Warning: The whole installation process requires enough storage space for both Boost and ROSE, the latter of which is upwards of 30GB (please visit the respective websites to get a clearer idea of system requirements).
 
@@ -49,7 +53,7 @@ Note that some of the directories here are dummy directories, replace them with 
 
 This should be enough for a working install of ROSE (please refer to rosecompiler.org/uploads/ROSE-UserManual.pdf if there are any issues while installing)
 
-# Compilation instructions for ConfROSE
+## Compilation instructions for ConfROSE
 
 Running "make" (without the quotes) inside the src directory in this git repo would compile the tool, and running "make run" would run it on the file a.c which is also in the same directory, with the security description file being security2.txt.
 
