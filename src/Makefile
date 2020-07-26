@@ -43,23 +43,23 @@ MOSTLYCLEANFILES =
 ##############################################################################
 # Assuming your source code is "FILE.C" to build an executable named "FILE".
 
-FILE 			 = test 
+FILE 			 = main
 
-all: test
+all: main
 
-test.o: test.C
+main.o: main.cpp
 	$(ROSE_CXX) -std=c++11 $(ROSE_CPPFLAGS) $(ROSE_CXXFLAGS) -I/usr/local -o $@ -c $^
 
 parsers.o: parsers.cpp
 	$(ROSE_CXX) -std=c++11 -o parsers.o -c parsers.cpp
 
-test: test.o parsers.o
+main: main.o parsers.o
 	$(ROSE_CXX) -std=c++11 $(ROSE_CXXFLAGS) -o $@ $^ $(ROSE_LDFLAGS) $(ROSE_LINK_RPATHS) -I/usr/local -Wl,-rpath=$(ROSE_HOME)/lib
 
 run:
-	./test security2.txt a.c
+	./main security.txt demo.c
 
-MOSTLYCLEANFILES += test *.o parsertest
+MOSTLYCLEANFILES += main *.o a.out
 
 ##############################################################################
 # Standard boilerplate
