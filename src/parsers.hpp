@@ -15,8 +15,6 @@
 #include <cmath>
 #include <iterator>
 
-//#include "sectree.hpp"
-
 #define FUNCTION_DECLARATION 1
 #define GLOBAL_VARIABLE 2
 
@@ -36,7 +34,5 @@ bool checkAnnotation (const std::string &comment);
 std::map <std::string, std::pair<int, std::string>> annotationParser(const std::string &comment, const std::map <std::string, std::set <std::string>> &graph, const std::vector <std::string> &vars, const int typeOfStatement, const std::string &statementName);
 
 std::pair <std::map <std::string, std::map <std::string, std::string>>, std::map <std::string, std::set <std::string>>> securityFileParser(std::ifstream & securityFile);
-
-//sectree extractTree (std::string comment);
 
 #endif

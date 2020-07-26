@@ -68,19 +68,6 @@ void commentTraversal::visit (SgNode* n) {
 
     if(!isGlobalDeclaration && !isFunctionDeclaration) return;
 
-#if 0
-    AttachedPreprocessingInfoType* comments = locatedNode -> getAttachedPreprocessingInfo();
-    if(comments != NULL){
-        std :: cout << "Found some comments attached to the IR node of type " << locatedNode -> class_name() << " located at memory location " << locatedNode << "\n";
-        int currentCommentIndex = 0;
-        auto it = comments -> begin();
-        auto c = *it;
-        for (; it != comments -> end(); it++, c = *it){
-            printf ("Commment number %d in file %s with relative position %s of type %s:\n %s\n", (++currentCommentIndex), (c -> get_file_info() -> get_filenameString()).c_str(), ((c -> getRelativePosition() == PreprocessingInfo :: before) ? ("before") : ("after")), (PreprocessingInfo::directiveTypeName(c -> getTypeOfDirective())).c_str(), (c -> getString()).c_str());
-        }
-    }
-#endif
-    
     int declarationType = (isGlobalDeclaration) ? GLOBAL_VARIABLE : FUNCTION_DECLARATION;
     //now populate vars - in the case of global stuff just put the variable name into vars, and in the case of function declaration, find the names of the variables
     //now for the addend - pass "-global" for global and the function name for function declaration (can't use "global" as this can be the name of a function).
@@ -115,14 +102,12 @@ void commentTraversal::visit (SgNode* n) {
         if (comment == "") {
             throw "No security annotations found for this definition.\n";
         }
-        //now do stuff with the comment
         auto functionStuff = annotationParser(comment, securityGraph, vars, declarationType, objectName);
         for (auto &x : functionStuff) {
             securityAssociation[x.first] = x.second;
         }
         
         if (objectName != "-global") {
-            //functionData[objectName] = functionStuff;
             std::vector <std::string> listOfTypes;
             for (auto &argument : (functionDeclaration -> get_parameterList()) -> get_args()) {
                 listOfTypes.push_back(securityAssociation[objectName + "::" + (argument -> get_name()).getString()].second);
@@ -148,16 +133,10 @@ void commentTraversal::visit (SgNode* n) {
 
 ------------------------- TYPE CHECKING TRAVERSAL ----------------------
 
-#endif 
-
-#if 0
-/*
-
-   type is an attribute of a node - very simple
 
    plan of action to do type checking - 
-
-   first check the kind of expression 
+   
+   first check the kind of the expression 
 
 STATIC:
     - integer constant : type is public
@@ -169,7 +148,7 @@ STATIC:
     - e1 op e2 - find lca of the levels of e1 and e2
     - typecast - no security check
 RUNTIME:
-    - *e - evaluate e and finds the level corresponding to the memory location e, and assigns it this type (but how to do this - this is a runtime check right)
+    - *e - evaluate e and finds the level corresponding to the memory location e, and assigns it this type 
 
     if this is not an expression, it can be a command or a program
 
@@ -198,7 +177,6 @@ RUNTIME:
 RUNTIME GENERAL STUFF:
     when implementing the runtime checks as calls to functions (basically you would make the attribute a struct consisting of a type and a list of runtime type-checks), you would need to ensure that the security type-checks are copied up everywhere.
 
-*/
 
 #endif 
 
@@ -232,7 +210,6 @@ class typeCheckingTraversal : public AstTopDownBottomUpProcessing<Scope, Type> {
     public:
         virtual Type evaluateSynthesizedAttribute(SgNode* n, Scope scope, SynthesizedAttributesList childAttributes);
         virtual Scope evaluateInheritedAttribute(SgNode* n, Scope scope = std::string("-global"));
-        //virtual void visit (SgNode* n);
 };
 
 Scope typeCheckingTraversal::evaluateInheritedAttribute(SgNode* n, Scope scope) {
@@ -285,23 +262,15 @@ Type typeCheckingTraversal::evaluateSynthesizedAttribute(SgNode* n, Scope scope,
         return Type("-static::public");
     }
 
-    //struct definition
-    //ctorinitializerlist?
-    //SgConstructorInitializer* initList = isSgConstructorInitializer(n);
-    //SgClassDefinition* initList = isSgClassDefinition(n);
-    //SgStructureModifier* initList = isSgStructureModifier(n);
-    //SgBracedInitializer* initList = isSgBracedInitializer(n);
-    //SgDesignatedInitializer* initList = isSgDesignatedInitializer(n); 
+    //struct definition or any list of expressions (also used in function calls)
     SgExprListExp* initList = isSgExprListExp(n);
     if (initList != NULL) {
         std::cout << "this is an initializer list used for initialising the struct" << std::endl;
         std::string s = "public";
 
         for (auto type : childAttributes) {
-            //std::cout << "type is " << type.type << std::endl;
             assert(type.type.size() >= 9 && (type.type.substr(0, 9) == "-static::"));
             s = LCA(s, type.type.substr(9));
-            //std::cout << "s is " << s << std::endl;
         }
         std::cout << "the type of this initializer list is " << "-static::" + s << std::endl;
         return Type("-static::" + s, childAttributes);
@@ -318,7 +287,6 @@ Type typeCheckingTraversal::evaluateSynthesizedAttribute(SgNode* n, Scope scope,
     //DISALLOWING +=, -=, *=, /=, &=, ^=, |=, --, ++
 
     SgBitAndOp* bitAndOp = isSgBitAndOp(n);
-    //SgBitEqvOp* bitEqvOp = isSgBitEqvOp(n);
     SgBitOrOp* bitOrOp = isSgBitOrOp(n);
     SgDivideOp* divideOp = isSgDivideOp(n);
     SgEqualityOp* equalityOp = isSgEqualityOp(n);
@@ -332,7 +300,6 @@ Type typeCheckingTraversal::evaluateSynthesizedAttribute(SgNode* n, Scope scope,
     SgModOp* modOp = isSgModOp(n);
     SgNotEqualOp* neOp = isSgNotEqualOp(n);
     SgOrOp* orOp = isSgOrOp(n);
-    //SgRemOp* remOp = isSgRemOp(n);
     SgSubtractOp* subtractOp = isSgSubtractOp(n);
     SgAddOp* addOp = isSgAddOp(n);
     SgAndOp* andOp = isSgAndOp(n);
@@ -340,7 +307,6 @@ Type typeCheckingTraversal::evaluateSynthesizedAttribute(SgNode* n, Scope scope,
     //op e1 - for unary operations which don't change e1
     //DISALLOWING *e
 
-    //SgPlusOp* plusOp = isSgPlusOp(n);
     SgMinusOp* minusOp = isSgMinusOp(n);
     SgNotOp* notOp = isSgNotOp(n);
 
@@ -354,18 +320,15 @@ Type typeCheckingTraversal::evaluateSynthesizedAttribute(SgNode* n, Scope scope,
         std::cout << "this is a binary/unary operator" << std::endl;
         std::string s = "public";
         for (auto type : childAttributes) {
-            //std::cout << "type is " << type.type << std::endl;
             assert(type.type.size() >= 9 && (type.type.substr(0, 9) == "-static::"));
             s = LCA(s, type.type.substr(9));
-            //std::cout << "s is " << s << std::endl;
         }
         std::cout << "the type of the result of the operator is " << "-static::" + s << std::endl;
         return Type("-static::" + s);
     }
 
     //typecast
-    //couldn't handle currently because couldn't find a node type for that
-    //but it is probably handled by the default return of childAttributes[0]
+    //handled by the default return of childAttributes[0]
 
     //assignment
     //for static typechecking, only handling assignment to global variables and no pointers, and the rhs must be statically typed
@@ -417,7 +380,6 @@ Type typeCheckingTraversal::evaluateSynthesizedAttribute(SgNode* n, Scope scope,
     SgFunctionCallExp* functionCall = isSgFunctionCallExp(n);
     if (functionCall != NULL) {
         SgFunctionDeclaration* functionDeclaration = functionCall -> getAssociatedFunctionDeclaration();
-        //SgFunctionSymbol* functionSymbol = functionCall -> getAssociatedFunctionSymbol();
         std::cout << "This is a function call" << std::endl;
         for (auto t : childAttributes) {
             std::cout << t.type << std::endl;
