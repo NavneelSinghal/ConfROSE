@@ -1,5 +1,3 @@
-# Sample makefile for programs that use the ROSE library.
-#
 # ROSE has a number of configuration details that must be present when
 # compiling and linking a user program with ROSE, and some of these
 # details are difficult to get right.  The most foolproof way to get
