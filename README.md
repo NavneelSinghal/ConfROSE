@@ -61,6 +61,6 @@ This should be enough for a working install of ROSE (please refer to rosecompile
 
 ## Compilation instructions for ConfROSE
 
-Running "make" (without the quotes) inside the src directory in this git repo would compile the tool, and running "make run" would run it on the file a.c which is also in the same directory, with the security description file being security2.txt.
+Running "make" (without the quotes) inside the src directory in this git repo would compile the tool, and running "make run" would run it on the file demo.c which is also in the same directory, with the security description file being security.txt.
 
 In the Makefile, note that you would need to change the declaration of ROSE_HOME suitably to your own installation of ROSE. 
